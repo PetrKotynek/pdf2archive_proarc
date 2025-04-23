@@ -10,7 +10,7 @@ backup:
     - mkdir -p backup
 
     # Backup repository (Git mirror)
-    - git clone --mirror "https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.com/${CI_PROJECT_PATH}.git" backup/repo.git
+    - git clone --mirror "https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.com/PetrKotynek/pdf2archive_proarc.git" backup/repo.git
 
     # Backup issues
     - curl --header "PRIVATE-TOKEN: ${GITLAB_ACCESS_TOKEN}" \
