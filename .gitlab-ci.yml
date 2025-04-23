@@ -1,0 +1,34 @@
+stages:
+  - backup
+
+backup:
+  stage: backup
+  script:
+    - echo "Starting GitLab Backup..."
+    
+    # Set up backup directory
+    - mkdir -p backup
+
+    # Backup repository (Git mirror)
+    - git clone --mirror "https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.com/${CI_PROJECT_PATH}.git" backup/repo.git
+
+    # Backup issues
+    - curl --header "PRIVATE-TOKEN: ${GITLAB_ACCESS_TOKEN}" \
+           "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/issues?state=all" \
+           -o backup/issues.json
+
+    # Backup merge requests
+    - curl --header "PRIVATE-TOKEN: ${GITLAB_ACCESS_TOKEN}" \
+           "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/merge_requests?state=all" \
+           -o backup/merge_requests.json
+
+    # Compress backup
+    - tar -czvf gitlab_backup.tar.gz backup/
+
+  artifacts:
+    paths:
+      - gitlab_backup.tar.gz
+    expire_in: 7 days  # Store backup artifacts for 7 days
+
+  only:
+    - main  # Run only on the main branch
