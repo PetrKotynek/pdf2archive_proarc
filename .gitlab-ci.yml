@@ -31,4 +31,4 @@ backup:
     expire_in: 7 days  # Store backup artifacts for 7 days
 
   only:
-    - main  # Run only on the main branch
+    - master  # Run only on the main branch
